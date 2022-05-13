@@ -4,6 +4,9 @@ import { movies, movieReviews, movieDetails } from './moviesData';
 import movieModel from './movieModel';
 import asyncHandler from 'express-async-handler';
 import { getUpcomingMovies } from '../tmdb-api';
+import { getSimilarMovies } from "../api/tmdb-api";
+import { getNowPlaying } from "../api/tmdb-api";
+import { getKeywords } from '../tmdb-api';
 
 const router = express.Router(); 
 
@@ -58,6 +61,21 @@ router.post('/:id/reviews', (req, res) => {
 router.get('/tmdb/upcoming', asyncHandler( async(req, res) => {
     const upcomingMovies = await getUpcomingMovies();
     res.status(200).json(upcomingMovies);
+  }));
+
+  router.get('/tmdb/similar', asyncHandler( async(req, res) => {
+    const similarMovies = await getSimilarMovies();
+    res.status(200).json(similarMovies);
+  }));
+
+  router.get('/tmdb/nowPlaying', asyncHandler( async(req, res) => {
+    const nowPlaying = await getNowPlaying();
+    res.status(200).json(nowPlaying);
+  }));
+
+  router.get('/tmdb/keywords', asyncHandler( async(req, res) => {
+    const movieKeywords = await getKeywords();
+    res.status(200).json(movieKeywords);
   }));
 
 export default router;
