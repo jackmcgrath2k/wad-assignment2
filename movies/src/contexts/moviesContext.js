@@ -1,31 +1,33 @@
-import React, { useState } from "react";
+import React, { createContext, useEffect, useReducer, useContext } from "react";
+import { getMovies } from "./api/movie-api";
+import { AuthContext } from './authContext';
 
-export const MoviesContext = React.createContext(null);
+export const MoviesContext = createContext(null);
 
-const MoviesContextProvider = (props) => {
-  const [favorites, setFavorites] = useState( [] )
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "load":
+      return { movies: action.payload.result };
+    default:
+      return state;
+  }
+};
 
-  const addToFavorites = (movie) => {
-    let newFavorites = [];
-    if (!favorites.includes(movie.id)){
-      newFavorites = [...favorites, movie.id];
-    }
-    setFavorites(newFavorites)
-  };
+const MoviesContextProvider = props => {
+  const context = useContext(AuthContext);
 
-  // We will use this function in a later section
-  const removeFromFavorites = (movie) => {
-    setFavorites( favorites.filter(
-      (mId) => mId !== movie.id
-    ) )
-  };
+  const [state, dispatch] = useReducer(reducer, { movies: []});
+
+  useEffect(() => {
+    getMovies().then(result => {
+      dispatch({ type: "load", payload: {result}});
+    });
+  },[context.isAuthenticated]);
 
   return (
     <MoviesContext.Provider
       value={{
-        favorites,
-        addToFavorites,
-        removeFromFavorites
+        movies: state.movies
       }}
     >
       {props.children}
@@ -33,4 +35,4 @@ const MoviesContextProvider = (props) => {
   );
 };
 
-export default MoviesContextProvider;
+export default MoviesContextProvider

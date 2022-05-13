@@ -13,12 +13,12 @@ import TopRatedPage from "./pages/topMoviesPage";
 import SiteHeader from './components/siteHeader';
 import { QueryClientProvider, QueryClient } from "react-query";
 import { ReactQueryDevtools } from 'react-query/devtools';
-import MoviesContextProvider from "./contexts/moviesContext";
+
 
 import SignUpPage from "./signUpPage";
 import LoginPage from "./loginPage";
 import AuthProvider from "./authContext";
-import MoviesContextProvider from "./moviesContext";
+import MovieProvider from "./contexts/moviesContext";
 import AuthHeader from "./authHeader";
 import ProtectedRoutes from "./protectedRoutes";
 
@@ -39,26 +39,13 @@ const App = () => {
       <AuthProvider>
         <SiteHeader />
         <AuthHeader />
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/public">Public</Link>
-          </li>
-          <li>
-            <Link to="/movies">Movies</Link>
-          </li>
-          <li>
-            <Link to="/profile">Profile</Link>
-          </li>
-        </ul>
-        <MoviesContextProvider>
+
+        <MovieProvider>
         <Routes>
-        <Route path="/public" element={ <PublicPage /> } />
             <Route path="/" element={ <HomePage /> } />
             <Route path="/signup" element={ <SignUpPage /> } />
             <Route path="/login" element={ <LoginPage /> } />
+            <Route path="*" element={ <Navigate to="/" /> } />
 
         <Route element={<ProtectedRoutes />}>
         <Route path="/reviews/:id" element={ <MovieReviewPage /> } />
@@ -72,10 +59,8 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
             </Route>
 
-
-            <Route path="*" element={ <Navigate to="/" /> } />
         </Routes>
-        </MoviesContextProvider>
+        </MovieProvider>
         </AuthProvider>
       </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} />
